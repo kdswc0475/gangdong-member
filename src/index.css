@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* { -webkit-tap-highlight-color: transparent; }
+
+body {
+  font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* PDF 출력 영역은 화면에서 스크롤 가능하게 */
+#social-pdf, #senior-pdf {
+  transform-origin: top left;
+}
+
+@media print {
+  body > *:not(#print-root) { display: none; }
+}
