@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 강동종합사회복지관 이용자 회원 등록 시스템
 
 ## 📁 파일 구성
@@ -111,3 +112,7 @@ git commit -m "수정 내용"
 git push origin main
 # GitHub Actions가 자동으로 빌드 & 배포
 ```
+=======
+# gangdong-member
+강동종합사회복지관 회원 등록 시스템
+>>>>>>> 015b8d9980f265e6fc9982d541551db6c34b6faa
