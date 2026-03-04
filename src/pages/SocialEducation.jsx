@@ -81,45 +81,52 @@ export default function SocialEducation({ navigate, editMember, defaultStatus = 
     }
     setLoading(true);
 
-    if (!isEdit) {
-      const dupRes = await checkDuplicate('social', form.성명, form.생년월일);
-      if (dupRes.isDuplicate) {
-        if (!window.confirm('동일 이름+생년월일 회원이 이미 있습니다. 그래도 등록하시겠습니까?')) {
-          setLoading(false); return;
+    try {
+      if (!isEdit) {
+        const dupRes = await checkDuplicate('social', form.성명, form.생년월일);
+        if (dupRes.isDuplicate) {
+          if (!window.confirm('동일 이름+생년월일 회원이 이미 있습니다. 그래도 등록하시겠습니까?')) {
+            setLoading(false); return;
+          }
         }
       }
-    }
 
-    const data = {
-      ...form,
-      신청프로그램: form.신청프로그램.join(', '),
-      개인정보동의: form.개인정보동의 ? '동의' : '미동의',
-      이용안내동의: form.이용안내동의 ? '동의' : '미동의',
-    };
+      const data = {
+        ...form,
+        신청프로그램: form.신청프로그램.join(', '),
+        개인정보동의: form.개인정보동의 ? '동의' : '미동의',
+        이용안내동의: form.이용안내동의 ? '동의' : '미동의',
+      };
 
-    const res = isEdit
-      ? await updateMember('social', editMember['행번호'], data)
-      : await addMember('social', data);
+      const res = isEdit
+        ? await updateMember('social', editMember['행번호'], data)
+        : await addMember('social', data);
 
-    setLoading(false);
-    if (res.success) {
-      if (!isEdit) {
-        if (withPdf) {
-          setPdfSigs({
-            sig1: sig1Ref.current?.toDataURL(),
-            sig2: sig2Ref.current?.toDataURL(),
-            sig3: sig3Ref.current?.toDataURL(),
-          });
-          setShowPdf(true);
+      if (res.success) {
+        if (!isEdit) {
+          if (withPdf) {
+            setPdfSigs({
+              sig1: sig1Ref.current?.toDataURL(),
+              sig2: sig2Ref.current?.toDataURL(),
+              sig3: sig3Ref.current?.toDataURL(),
+            });
+            setShowPdf(true);
+          } else {
+            alert('등록이 완료되었습니다.');
+            navigate('memberList', { sheetType: 'social' });
+          }
         } else {
-          alert('등록이 완료되었습니다.');
+          alert('수정되었습니다.');
           navigate('memberList', { sheetType: 'social' });
         }
       } else {
-        navigate('memberList', { sheetType: 'social' });
+        alert(res.message || '오류가 발생했습니다.');
       }
-    } else {
-      alert(res.message || '오류가 발생했습니다.');
+    } catch (err) {
+      console.error(err);
+      alert('통신 중 오류가 발생했습니다. 네트워크 상태를 확인해주세요.');
+    } finally {
+      setLoading(false);
     }
   }
 
