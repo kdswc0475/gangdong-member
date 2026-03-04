@@ -1,13 +1,15 @@
-// 사회교육 신청서 PDF 양식 컴포넌트
-export default function SocialPdfTemplate({ data, sig1, sig2, sig3 }) {
+export default function SocialPdfTemplate({ data, sig1, sig2, sig3, allPrograms = [] }) {
   const today = data.신청일 || new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
-  const programs = Array.isArray(data.신청프로그램) ? data.신청프로그램 : [];
 
-  const allPrograms = [
+  // data.신청프로그램이 문자열인 경우와 배열인 경우 대응
+  const selectedPrograms = Array.isArray(data.신청프로그램)
+    ? data.신청프로그램
+    : (data.신청프로그램 || '').split(',').map(s => s.trim()).filter(Boolean);
+
+  const displayPrograms = allPrograms.length > 0 ? allPrograms : [
     '유아발레교실', '유아K-POP댄스', '유아 창의미술',
     '셔플댄스(초급반)', '셔플댄스(중급반)', '벨리댄스',
-    '성인통기타', '라인댄스',
-    ...(data.extraPrograms || []),
+    '성인통기타', '다이어트댄스', '성인요가', '라인댄스',
   ];
 
   const lifeOptions = ['일반', '기초생활수급', '차상위', '국가유공자', '기타'];
@@ -31,7 +33,7 @@ export default function SocialPdfTemplate({ data, sig1, sig2, sig3 }) {
         <tbody>
           <tr>
             <td rowSpan={5} style={thStyle({ width: '12mm', writingMode: 'vertical-rl', textAlign: 'center' })}>
-              일<br/>반<br/>사<br/>항
+              일<br />반<br />사<br />항
             </td>
             <td style={tdLabelStyle()}>성 명</td>
             <td style={tdValueStyle()}>{data.성명}</td>
@@ -72,12 +74,18 @@ export default function SocialPdfTemplate({ data, sig1, sig2, sig3 }) {
       <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '4mm' }}>
         <tbody>
           <tr>
-            <td style={thStyle({ width: '20mm' })}>신청<br/>프로그램</td>
+            <td style={thStyle({ width: '20mm' })}>신청<br />프로그램</td>
             <td style={{ border: '1px solid #000', padding: '2mm 3mm' }}>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2mm 6mm' }}>
-                {allPrograms.map(p => (
-                  <span key={p}>□ {p} {programs.includes(p) ? '✓' : ''}</span>
-                ))}
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2mm 4mm' }}>
+                {selectedPrograms.length > 0 ? (
+                  selectedPrograms.map(p => (
+                    <span key={p} style={{ background: '#f0f0f0', padding: '1mm 2mm', borderRadius: '1mm', fontSize: '9pt', border: '0.2mm solid #ccc' }}>
+                      ✓ {p}
+                    </span>
+                  ))
+                ) : (
+                  <span style={{ color: '#888' }}>(신청된 프로그램이 없습니다)</span>
+                )}
               </div>
             </td>
           </tr>

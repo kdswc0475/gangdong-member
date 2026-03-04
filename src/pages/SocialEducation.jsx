@@ -41,7 +41,7 @@ export default function SocialEducation({ navigate, editMember, defaultStatus = 
         개인정보동의: editMember['개인정보동의'] === '동의',
         이용안내동의: editMember['이용안내동의'] === '동의',
         상태: editMember['상태'] || '정회원',
-        특이사항: editMember['특이사항'] || '',
+        특이사항: editMember['기타사항'] || editMember['특이사항'] || '',
       });
     }
   }, []);
@@ -96,7 +96,9 @@ export default function SocialEducation({ navigate, editMember, defaultStatus = 
         신청프로그램: form.신청프로그램.join(', '),
         개인정보동의: form.개인정보동의 ? '동의' : '미동의',
         이용안내동의: form.이용안내동의 ? '동의' : '미동의',
+        기타사항: form.특이사항, // 필드명 통일 (특이사항 -> 기타사항)
       };
+      delete data.특이사항;
 
       const res = isEdit
         ? await updateMember('social', editMember['행번호'], data)
@@ -142,8 +144,13 @@ export default function SocialEducation({ navigate, editMember, defaultStatus = 
             className="flex-1 py-3 bg-blue-800 text-white rounded-xl font-semibold">💾 저장</button>
         </div>
         <div className="overflow-auto">
-          <SocialPdfTemplate data={{ ...form, 신청프로그램: form.신청프로그램 }}
-            sig1={pdfSigs.sig1} sig2={pdfSigs.sig2} sig3={pdfSigs.sig3} />
+          <SocialPdfTemplate
+            data={{ ...form, 신청프로그램: form.신청프로그램 }}
+            sig1={pdfSigs.sig1}
+            sig2={pdfSigs.sig2}
+            sig3={pdfSigs.sig3}
+            allPrograms={programs}
+          />
         </div>
       </div>
     );

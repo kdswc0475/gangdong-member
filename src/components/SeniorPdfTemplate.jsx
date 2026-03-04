@@ -1,15 +1,17 @@
-// 노인대학 신청서 PDF 양식
-export default function SeniorPdfTemplate({ data, sig1 }) {
+export default function SeniorPdfTemplate({ data, sig1, allPrograms = [] }) {
   const lifeOptions = ['일반', '기초생활수급', '차상위', '국가유공자', '기타'];
   const livingOptions = ['노인부부', '1인가구', '직계가족', '친척', '기타'];
-  const programs = Array.isArray(data.희망수업) ? data.희망수업 : [];
 
-  const allPrograms = [
+  // data.희망수업이 문자열인 경우와 배열인 경우 대응
+  const selectedPrograms = Array.isArray(data.희망수업)
+    ? data.희망수업
+    : (data.희망수업 || '').split(',').map(s => s.trim()).filter(Boolean);
+
+  const displayPrograms = allPrograms.length > 0 ? allPrograms : [
     '한글교실(초급1반)', '한글교실(초급2반)', '한글교실(상급반)',
     '영어교실(초급)', '영어교실(중급)',
     '디지털 역량 교육(초급)', '디지털 역량 교육(중급)',
     '맷돌체조', '실버요가1', '실버요가2', '노래교실',
-    ...(data.extraPrograms || []),
   ];
 
   return (
@@ -31,7 +33,7 @@ export default function SeniorPdfTemplate({ data, sig1 }) {
         <tbody>
           <tr>
             <td rowSpan={5} style={thStyle({ width: '12mm', writingMode: 'vertical-rl', textAlign: 'center' })}>
-              일<br/>반<br/>사<br/>항
+              일<br />반<br />사<br />항
             </td>
             <td style={tdLabelStyle()}>성 명</td>
             <td style={tdValueStyle()}>{data.성명}</td>
@@ -74,7 +76,7 @@ export default function SeniorPdfTemplate({ data, sig1 }) {
         <tbody>
           <tr>
             <td rowSpan={2} style={thStyle({ width: '12mm', writingMode: 'vertical-rl', textAlign: 'center' })}>
-              참<br/>고<br/>사<br/>항
+              참<br />고<br />사<br />항
             </td>
             <td style={tdLabelStyle()}>동거상태</td>
             <td colSpan={3} style={tdValueStyle()}>
@@ -89,10 +91,16 @@ export default function SeniorPdfTemplate({ data, sig1 }) {
           <tr>
             <td style={tdLabelStyle()}>희망수업</td>
             <td colSpan={3} style={tdValueStyle()}>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2mm 6mm' }}>
-                {allPrograms.map(p => (
-                  <span key={p}>□ {p} {programs.includes(p) ? '✓' : ''}</span>
-                ))}
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2mm 4mm' }}>
+                {selectedPrograms.length > 0 ? (
+                  selectedPrograms.map(p => (
+                    <span key={p} style={{ background: '#f0f0f0', padding: '1mm 2mm', borderRadius: '1mm', fontSize: '9pt', border: '0.2mm solid #ccc' }}>
+                      ✓ {p}
+                    </span>
+                  ))
+                ) : (
+                  <span style={{ color: '#888' }}>(선택된 수업이 없습니다)</span>
+                )}
               </div>
             </td>
           </tr>

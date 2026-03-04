@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { saveNote, approveWaitlist } from '../utils/api';
 
 export default function MemberDetailModal({ member, sheetType, onClose, onUpdate }) {
-  const [note, setNote] = useState(member['특이사항'] || '');
+  const [note, setNote] = useState(member['기타사항'] || member['특이사항'] || '');
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
 
@@ -48,8 +48,8 @@ export default function MemberDetailModal({ member, sheetType, onClose, onUpdate
             <div className="flex items-center gap-2">
               <h2 className="text-xl font-bold text-gray-800">{member['성명']}</h2>
               <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${member['상태'] === '정회원' ? 'bg-green-100 text-green-700' :
-                  member['상태'] === '대기' ? 'bg-yellow-100 text-yellow-700' :
-                    'bg-red-100 text-red-700'
+                member['상태'] === '대기' ? 'bg-yellow-100 text-yellow-700' :
+                  'bg-red-100 text-red-700'
                 }`}>{member['상태']}</span>
             </div>
             <p className="text-sm text-gray-500 mt-0.5">등록일 {member['등록일']}</p>
@@ -122,8 +122,8 @@ export default function MemberDetailModal({ member, sheetType, onClose, onUpdate
               onClick={handleSaveNote}
               disabled={saving}
               className={`mt-2 w-full py-2.5 rounded-xl text-sm font-semibold transition-all ${saved
-                  ? 'bg-green-500 text-white'
-                  : 'bg-amber-500 text-white active:scale-95'
+                ? 'bg-green-500 text-white'
+                : 'bg-amber-500 text-white active:scale-95'
                 } disabled:opacity-60`}
             >
               {saving ? '저장 중...' : saved ? '✓ 저장됨' : '기타사항 저장'}

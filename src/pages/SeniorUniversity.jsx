@@ -38,7 +38,7 @@ export default function SeniorUniversity({ navigate, editMember, defaultStatus =
         희망수업,
         개인정보동의: editMember['개인정보동의'] === '동의',
         상태: editMember['상태'] || '정회원',
-        특이사항: editMember['특이사항'] || '',
+        특이사항: editMember['기타사항'] || editMember['특이사항'] || '',
       });
     }
   }, []);
@@ -88,7 +88,9 @@ export default function SeniorUniversity({ navigate, editMember, defaultStatus =
         ...form,
         희망수업: form.희망수업.join(', '),
         개인정보동의: form.개인정보동의 ? '동의' : '미동의',
+        기타사항: form.특이사항, // 필드명 통일 (특이사항 -> 기타사항)
       };
+      delete data.특이사항;
 
       const res = isEdit
         ? await updateMember('senior', editMember['행번호'], data)
@@ -130,7 +132,11 @@ export default function SeniorUniversity({ navigate, editMember, defaultStatus =
             className="flex-1 py-3 bg-emerald-800 text-white rounded-xl font-semibold">💾 저장</button>
         </div>
         <div className="overflow-auto">
-          <SeniorPdfTemplate data={{ ...form, 희망수업: form.희망수업 }} sig1={pdfSig} />
+          <SeniorPdfTemplate
+            data={{ ...form, 희망수업: form.희망수업 }}
+            sig1={pdfSig}
+            allPrograms={programs}
+          />
         </div>
       </div>
     );
