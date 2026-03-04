@@ -75,8 +75,11 @@ export default function SeniorUniversity({ navigate, editMember, defaultStatus =
     setLoading(true);
 
     try {
+      console.log('📝 [DEBUG] Registration Start - withPdf:', withPdf);
       if (!isEdit) {
+        console.log('🔍 [DEBUG] Checking for duplicate...');
         const dupRes = await checkDuplicate('senior', form.성명, form.생년월일);
+        console.log('🔍 [DEBUG] Duplicate Check Result:', dupRes);
         if (dupRes.isDuplicate) {
           if (!window.confirm('동일 이름+생년월일 회원이 이미 있습니다. 그래도 등록하시겠습니까?')) {
             setLoading(false); return;
@@ -84,6 +87,7 @@ export default function SeniorUniversity({ navigate, editMember, defaultStatus =
         }
       }
 
+      console.log('📦 [DEBUG] Preparing data payload...', form);
       const data = {
         ...form,
         희망수업: form.희망수업.join(', '),
@@ -92,9 +96,12 @@ export default function SeniorUniversity({ navigate, editMember, defaultStatus =
       };
       delete data.특이사항;
 
+      console.log('🚀 [DEBUG] Sending Member Data...', data);
       const res = isEdit
         ? await updateMember('senior', editMember['행번호'], data)
         : await addMember('senior', data);
+
+      console.log('📡 [DEBUG] Member Action Result:', res);
 
       if (res.success) {
         if (!isEdit) {
