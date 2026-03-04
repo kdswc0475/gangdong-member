@@ -17,4 +17,4 @@ export const LIFE_STATUS = ['일반', '기초생활수급', '차상위', '국가
 export const LIVING_STATUS = ['노인부부', '1인가구', '직계가족', '친척', '기타'];
 
 // 회원 상태
-export const MEMBER_STATUS = ['정상', '대기', '삭제'];
+export const MEMBER_STATUS = ['정회원', '대기', '삭제'];

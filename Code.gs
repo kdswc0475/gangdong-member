@@ -12,12 +12,12 @@ const SHEET_PROGRAMS_SENIOR   = '노인대학_프로그램목록';
 const SOCIAL_HEADERS = [
   '행번호','등록일','상태','성명','성별','생년월일',
   '주소(동)','연락처','비상연락처','관계','생활구분',
-  '신청프로그램','개인정보동의','이용안내동의','특이사항'
+  '신청프로그램','개인정보동의','이용안내동의','기타사항'
 ];
 const SENIOR_HEADERS = [
   '행번호','등록일','상태','성명','성별','생년월일',
   '주소(동)','연락처','비상연락처','관계','생활구분',
-  '동거상태','희망수업','개인정보동의','특이사항'
+  '동거상태','희망수업','개인정보동의','기타사항'
 ];
 const PROGRAM_HEADERS = ['프로그램명','등록일'];
 
@@ -130,7 +130,7 @@ function addMember(sheetType, data) {
   const row = hd.map(h => {
     if (h === '행번호') return rowIndex;
     if (h === '등록일') return today();
-    if (h === '상태')   return data['상태'] || '정상';
+    if (h === '상태')   return data['상태'] || '정회원';
     return data[h] !== undefined ? data[h] : '';
   });
   sh.appendRow(row);
@@ -164,7 +164,7 @@ function approveWaitlist(sheetType, rowIndex) {
   const hd = hdrs(sheetType);
   const targetRow = findRow(sh, rowIndex);
   if (targetRow === -1) throw new Error('회원을 찾을 수 없습니다.');
-  sh.getRange(targetRow, hd.indexOf('상태') + 1).setValue('정상');
+  sh.getRange(targetRow, hd.indexOf('상태') + 1).setValue('정회원');
 }
 
 function saveNote(sheetType, rowIndex, note) {
@@ -172,7 +172,7 @@ function saveNote(sheetType, rowIndex, note) {
   const hd = hdrs(sheetType);
   const targetRow = findRow(sh, rowIndex);
   if (targetRow === -1) throw new Error('회원을 찾을 수 없습니다.');
-  sh.getRange(targetRow, hd.indexOf('특이사항') + 1).setValue(note);
+  sh.getRange(targetRow, hd.indexOf('기타사항') + 1).setValue(note);
 }
 
 // ── 프로그램 관리 ───────────────────────────────────────────

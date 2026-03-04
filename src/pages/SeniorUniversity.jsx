@@ -15,10 +15,10 @@ export default function SeniorUniversity({ navigate, editMember, defaultStatus =
   });
 
   const [programs, setPrograms] = useState([]);
-  const [loading, setLoading]   = useState(false);
-  const [showPdf, setShowPdf]   = useState(false);
-  const [pdfSig, setPdfSig]     = useState(null);
-  const [errors, setErrors]     = useState({});
+  const [loading, setLoading] = useState(false);
+  const [showPdf, setShowPdf] = useState(false);
+  const [pdfSig, setPdfSig] = useState(null);
+  const [errors, setErrors] = useState({});
   const sig1Ref = useRef();
 
   useEffect(() => {
@@ -37,7 +37,7 @@ export default function SeniorUniversity({ navigate, editMember, defaultStatus =
         동거상태: editMember['동거상태'] || '',
         희망수업,
         개인정보동의: editMember['개인정보동의'] === '동의',
-        상태: editMember['상태'] || '정상',
+        상태: editMember['상태'] || '정회원',
         특이사항: editMember['특이사항'] || '',
       });
     }
@@ -56,15 +56,15 @@ export default function SeniorUniversity({ navigate, editMember, defaultStatus =
 
   function validate() {
     const e = {};
-    if (!form.성명.trim())     e.성명 = '성명을 입력하세요';
-    if (!form.성별)            e.성별 = '성별을 선택하세요';
-    if (!form['주소(동)'])     e['주소(동)'] = '주소를 선택하세요';
-    if (!form.연락처.trim())   e.연락처 = '연락처를 입력하세요';
+    if (!form.성명.trim()) e.성명 = '성명을 입력하세요';
+    if (!form.성별) e.성별 = '성별을 선택하세요';
+    if (!form['주소(동)']) e['주소(동)'] = '주소를 선택하세요';
+    if (!form.연락처.trim()) e.연락처 = '연락처를 입력하세요';
     if (!form.생년월일.trim()) e.생년월일 = '생년월일을 입력하세요';
-    if (!form.생활구분)        e.생활구분 = '생활구분을 선택하세요';
-    if (!form.동거상태)        e.동거상태 = '동거상태를 선택하세요';
+    if (!form.생활구분) e.생활구분 = '생활구분을 선택하세요';
+    if (!form.동거상태) e.동거상태 = '동거상태를 선택하세요';
     if (form.희망수업.length === 0) e.희망수업 = '희망수업을 선택하세요';
-    if (!form.개인정보동의)    e.개인정보동의 = '개인정보 동의가 필요합니다';
+    if (!form.개인정보동의) e.개인정보동의 = '개인정보 동의가 필요합니다';
     setErrors(e);
     return Object.keys(e).length === 0;
   }
@@ -148,9 +148,9 @@ export default function SeniorUniversity({ navigate, editMember, defaultStatus =
           </Field>
           <Field label="성별" error={errors.성별} required>
             <div className="flex gap-3">
-              {['남','여'].map(g => (
+              {['남', '여'].map(g => (
                 <button key={g} onClick={() => set('성별', g)}
-                  className={`flex-1 py-3 rounded-xl font-semibold border-2 transition-all ${form.성별===g ? 'border-emerald-600 bg-emerald-50 text-emerald-700' : 'border-gray-200 bg-white text-gray-600'}`}>{g}</button>
+                  className={`flex-1 py-3 rounded-xl font-semibold border-2 transition-all ${form.성별 === g ? 'border-emerald-600 bg-emerald-50 text-emerald-700' : 'border-gray-200 bg-white text-gray-600'}`}>{g}</button>
               ))}
             </div>
           </Field>
@@ -168,7 +168,7 @@ export default function SeniorUniversity({ navigate, editMember, defaultStatus =
             <Field label="관계"><input value={form.관계} onChange={e => set('관계', e.target.value)} className={inp()} placeholder="배우자" /></Field>
           </div>
           <Field label="생년월일" error={errors.생년월일} required>
-            <input value={form.생년월일} onChange={e => set('생년월일', e.target.value)} className={inp(errors.생년월일)} placeholder="예) 1950-01-01" />
+            <input value={form.생년월일} onChange={e => set('생년월일', e.target.value)} className={inp(errors.생년월일)} type="date" />
           </Field>
           <Field label="생활구분" error={errors.생활구분} required>
             <select value={form.생활구분} onChange={e => set('생활구분', e.target.value)} className={inp(errors.생활구분)}>
@@ -178,7 +178,7 @@ export default function SeniorUniversity({ navigate, editMember, defaultStatus =
           </Field>
           <Field label="회원 상태">
             <select value={form.상태} onChange={e => set('상태', e.target.value)} className={inp()}>
-              {['정상','대기'].map(s => <option key={s} value={s}>{s}</option>)}
+              {['정회원', '대기'].map(s => <option key={s} value={s}>{s}</option>)}
             </select>
           </Field>
         </Section>
@@ -188,7 +188,7 @@ export default function SeniorUniversity({ navigate, editMember, defaultStatus =
             <div className="flex flex-wrap gap-2">
               {LIVING_STATUS.map(s => (
                 <button key={s} onClick={() => set('동거상태', s)}
-                  className={`px-4 py-2 rounded-xl text-sm font-medium border-2 transition-all ${form.동거상태===s ? 'border-emerald-600 bg-emerald-50 text-emerald-700' : 'border-gray-200 bg-white text-gray-600'}`}>{s}</button>
+                  className={`px-4 py-2 rounded-xl text-sm font-medium border-2 transition-all ${form.동거상태 === s ? 'border-emerald-600 bg-emerald-50 text-emerald-700' : 'border-gray-200 bg-white text-gray-600'}`}>{s}</button>
               ))}
             </div>
           </Field>
@@ -225,13 +225,12 @@ export default function SeniorUniversity({ navigate, editMember, defaultStatus =
           </Section>
         )}
 
-        {/* 특이사항 */}
         <div className="bg-amber-50 rounded-2xl border border-amber-100 p-5">
-          <h2 className="font-bold text-amber-700 text-base mb-3">📝 특이사항 (내부용)</h2>
+          <h2 className="font-bold text-amber-700 text-base mb-3">📝 기타사항</h2>
           <textarea
             value={form.특이사항}
             onChange={e => set('특이사항', e.target.value)}
-            placeholder="특이사항을 입력하세요 (신청서에 포함되지 않습니다)"
+            placeholder="기타사항을 입력하세요"
             rows={3}
             className="w-full bg-white border border-amber-200 rounded-xl px-3 py-2.5 text-sm outline-none resize-none focus:border-amber-400 placeholder-gray-300"
           />

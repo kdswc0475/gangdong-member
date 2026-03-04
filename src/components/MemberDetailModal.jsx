@@ -2,11 +2,11 @@ import { useState } from 'react';
 import { saveNote, approveWaitlist } from '../utils/api';
 
 export default function MemberDetailModal({ member, sheetType, onClose, onUpdate }) {
-  const [note, setNote]         = useState(member['특이사항'] || '');
-  const [saving, setSaving]     = useState(false);
-  const [saved, setSaved]       = useState(false);
+  const [note, setNote] = useState(member['특이사항'] || '');
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
 
-  const isSocial   = sheetType === 'social';
+  const isSocial = sheetType === 'social';
   const programKey = isSocial ? '신청프로그램' : '희망수업';
   const accentColor = isSocial ? '#1e40af' : '#065f46';
 
@@ -24,7 +24,7 @@ export default function MemberDetailModal({ member, sheetType, onClose, onUpdate
   }
 
   async function handleApprove() {
-    if (!window.confirm(`${member['성명']} 회원을 대기 → 정상으로 승인하시겠습니까?`)) return;
+    if (!window.confirm(`${member['성명']} 회원을 대기 → 정회원으로 승인하시겠습니까?`)) return;
     const res = await approveWaitlist(sheetType, member['행번호']);
     if (res.success) { onUpdate && onUpdate(); onClose(); }
     else alert(res.message);
@@ -47,11 +47,10 @@ export default function MemberDetailModal({ member, sheetType, onClose, onUpdate
           <div>
             <div className="flex items-center gap-2">
               <h2 className="text-xl font-bold text-gray-800">{member['성명']}</h2>
-              <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                member['상태'] === '정상' ? 'bg-green-100 text-green-700' :
-                member['상태'] === '대기' ? 'bg-yellow-100 text-yellow-700' :
-                'bg-red-100 text-red-700'
-              }`}>{member['상태']}</span>
+              <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${member['상태'] === '정회원' ? 'bg-green-100 text-green-700' :
+                  member['상태'] === '대기' ? 'bg-yellow-100 text-yellow-700' :
+                    'bg-red-100 text-red-700'
+                }`}>{member['상태']}</span>
             </div>
             <p className="text-sm text-gray-500 mt-0.5">등록일 {member['등록일']}</p>
           </div>
@@ -60,10 +59,10 @@ export default function MemberDetailModal({ member, sheetType, onClose, onUpdate
 
         {/* 기본 정보 */}
         <div className="px-6 py-4 space-y-3">
-          <InfoRow label="성별"    value={member['성별']} />
+          <InfoRow label="성별" value={member['성별']} />
           <InfoRow label="생년월일" value={member['생년월일']} />
-          <InfoRow label="거주지"  value={member['주소(동)']} />
-          <InfoRow label="연락처"  value={member['연락처']} />
+          <InfoRow label="거주지" value={member['주소(동)']} />
+          <InfoRow label="연락처" value={member['연락처']} />
           {member['비상연락처'] && (
             <InfoRow label="비상연락처" value={`${member['비상연락처']} (${member['관계']})`} />
           )}
@@ -102,34 +101,32 @@ export default function MemberDetailModal({ member, sheetType, onClose, onUpdate
               style={{ background: accentColor }}
               className="w-full py-3 rounded-xl text-white font-bold text-sm active:scale-95 transition-transform"
             >
-              ✓ 정상 등록으로 승인
+              ✓ 정회원 등록으로 승인
             </button>
           </div>
         )}
 
-        {/* 특이사항 */}
         <div className="px-6 pb-6">
           <div className="bg-amber-50 rounded-2xl p-4 border border-amber-100">
             <p className="text-xs font-semibold text-amber-700 uppercase tracking-wide mb-2">
-              📝 특이사항 (내부용)
+              📝 기타사항
             </p>
             <textarea
               value={note}
               onChange={e => setNote(e.target.value)}
-              placeholder="특이사항을 입력하세요 (내부 확인용, 신청서에 포함되지 않음)"
+              placeholder="기타사항을 입력하세요"
               rows={3}
               className="w-full bg-white border border-amber-200 rounded-xl px-3 py-2.5 text-sm outline-none resize-none focus:border-amber-400 placeholder-gray-300"
             />
             <button
               onClick={handleSaveNote}
               disabled={saving}
-              className={`mt-2 w-full py-2.5 rounded-xl text-sm font-semibold transition-all ${
-                saved
+              className={`mt-2 w-full py-2.5 rounded-xl text-sm font-semibold transition-all ${saved
                   ? 'bg-green-500 text-white'
                   : 'bg-amber-500 text-white active:scale-95'
-              } disabled:opacity-60`}
+                } disabled:opacity-60`}
             >
-              {saving ? '저장 중...' : saved ? '✓ 저장됨' : '특이사항 저장'}
+              {saving ? '저장 중...' : saved ? '✓ 저장됨' : '기타사항 저장'}
             </button>
           </div>
         </div>
@@ -151,9 +148,8 @@ function InfoRow({ label, value }) {
 function ConsentBadge({ label, value }) {
   const agreed = value === '동의' || value === true || value === 'true';
   return (
-    <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium ${
-      agreed ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-500'
-    }`}>
+    <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium ${agreed ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-500'
+      }`}>
       <span>{agreed ? '✓' : '✗'}</span>
       <span>{label}</span>
     </div>

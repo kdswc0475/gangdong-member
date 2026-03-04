@@ -3,18 +3,18 @@ import { getMembers, deleteMember } from '../utils/api';
 import MemberDetailModal from '../components/MemberDetailModal';
 
 export default function MemberList({ navigate, sheetType }) {
-  const [members, setMembers]             = useState([]);
-  const [loading, setLoading]             = useState(true);
-  const [search, setSearch]               = useState('');
+  const [members, setMembers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState('');
   const [filterProgram, setFilterProgram] = useState('전체');
-  const [activeTab, setActiveTab]         = useState('정상');
+  const [activeTab, setActiveTab] = useState('정회원');
   const [selectedMember, setSelectedMember] = useState(null);
-  const [error, setError]                 = useState('');
+  const [error, setError] = useState('');
 
-  const isSocial   = sheetType === 'social';
-  const headerBg   = isSocial ? '#1e40af' : '#065f46';
+  const isSocial = sheetType === 'social';
+  const headerBg = isSocial ? '#1e40af' : '#065f46';
   const programKey = isSocial ? '신청프로그램' : '희망수업';
-  const title      = isSocial ? '사회교육 프로그램' : '노인대학 청춘캠퍼스';
+  const title = isSocial ? '사회교육 프로그램' : '노인대학 청춘캠퍼스';
 
   useEffect(() => { fetchMembers(); }, []);
 
@@ -36,16 +36,16 @@ export default function MemberList({ navigate, sheetType }) {
     else alert(res.message);
   }
 
-  const normalMembers  = members.filter(m => m['상태'] === '정상');
+  const normalMembers = members.filter(m => m['상태'] === '정회원');
   const waitingMembers = members.filter(m => m['상태'] === '대기');
-  const displayList    = activeTab === '정상' ? normalMembers : waitingMembers;
+  const displayList = activeTab === '정회원' ? normalMembers : waitingMembers;
 
   const allPrograms = ['전체', ...new Set(
     members.flatMap(m => (m[programKey] || '').split(',').map(p => p.trim()).filter(Boolean))
   )];
 
   const filtered = displayList.filter(m => {
-    const matchSearch  = !search || m['성명']?.includes(search) || m['연락처']?.includes(search);
+    const matchSearch = !search || m['성명']?.includes(search) || m['연락처']?.includes(search);
     const matchProgram = filterProgram === '전체' || (m[programKey] || '').includes(filterProgram);
     return matchSearch && matchProgram;
   });
@@ -73,9 +73,8 @@ export default function MemberList({ navigate, sheetType }) {
           <div className="flex gap-2 overflow-x-auto pb-1">
             {allPrograms.slice(0, 10).map(p => (
               <button key={p} onClick={() => setFilterProgram(p)}
-                className={`flex-shrink-0 text-xs px-3 py-1.5 rounded-full font-medium transition-all ${
-                  filterProgram === p ? 'bg-white text-gray-800' : 'bg-white bg-opacity-20 text-white'
-                }`}>{p}</button>
+                className={`flex-shrink-0 text-xs px-3 py-1.5 rounded-full font-medium transition-all ${filterProgram === p ? 'bg-white text-gray-800' : 'bg-white bg-opacity-20 text-white'
+                  }`}>{p}</button>
             ))}
           </div>
         </div>
@@ -85,7 +84,7 @@ export default function MemberList({ navigate, sheetType }) {
       <div className="max-w-3xl mx-auto">
         <div className="flex bg-white border-b border-gray-200 shadow-sm">
           {[
-            { key: '정상', label: '정상 회원', count: normalMembers.length, color: isSocial ? '#1e40af' : '#065f46' },
+            { key: '정회원', label: '정회원', count: normalMembers.length, color: isSocial ? '#1e40af' : '#065f46' },
             { key: '대기', label: '대기자', count: waitingMembers.length, color: '#d97706', alert: waitingMembers.length > 0 },
           ].map(tab => (
             <button key={tab.key} onClick={() => setActiveTab(tab.key)}
@@ -93,8 +92,10 @@ export default function MemberList({ navigate, sheetType }) {
               style={{ borderColor: activeTab === tab.key ? tab.color : 'transparent', color: activeTab === tab.key ? tab.color : '#9ca3af' }}>
               {tab.label}
               <span className="text-xs px-1.5 py-0.5 rounded-full font-bold"
-                style={{ background: activeTab === tab.key ? (tab.alert ? '#fef3c7' : '#f0f9ff') : '#f3f4f6',
-                         color: activeTab === tab.key ? tab.color : '#9ca3af' }}>
+                style={{
+                  background: activeTab === tab.key ? (tab.alert ? '#fef3c7' : '#f0f9ff') : '#f3f4f6',
+                  color: activeTab === tab.key ? tab.color : '#9ca3af'
+                }}>
                 {tab.count}
               </span>
             </button>
@@ -118,7 +119,7 @@ export default function MemberList({ navigate, sheetType }) {
             <button
               onClick={() => navigate(isSocial ? 'social' : 'senior', {
                 editMember: null,
-                defaultStatus: activeTab === '대기' ? '대기' : '정상',
+                defaultStatus: activeTab === '대기' ? '대기' : '정회원',
               })}
               style={{ background: headerBg }}
               className="text-white text-sm font-semibold px-5 py-2.5 rounded-xl shadow-md active:scale-95 transition-transform">
@@ -146,11 +147,10 @@ export default function MemberList({ navigate, sheetType }) {
                   <div className="flex items-center gap-2 mb-1 flex-wrap">
                     <span className="font-bold text-gray-800 text-base">{member['성명']}</span>
                     <span className="text-xs text-gray-400">{member['성별']}</span>
-                    <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                      member['상태'] === '정상' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'
-                    }`}>{member['상태']}</span>
+                    <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${member['상태'] === '정회원' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'
+                      }`}>{member['상태']}</span>
                     {member['특이사항'] && (
-                      <span className="text-xs px-2 py-0.5 rounded-full bg-amber-100 text-amber-600 font-medium">📝 특이사항</span>
+                      <span className="text-xs px-2 py-0.5 rounded-full bg-amber-100 text-amber-600 font-medium">📝 기타사항</span>
                     )}
                   </div>
                   <p className="text-sm text-gray-500">{member['연락처']} · {member['주소(동)']}</p>
