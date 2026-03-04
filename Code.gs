@@ -22,15 +22,13 @@ const SENIOR_HEADERS = [
 const PROGRAM_HEADERS = ['프로그램명','등록일'];
 
 // ── CORS / 응답 헬퍼 ───────────────────────────────────────
-function cors(output) {
-  return output
-    .setMimeType(ContentService.MimeType.JSON)
-    .addHeader('Access-Control-Allow-Origin', '*')
-    .addHeader('Access-Control-Allow-Methods', 'GET, POST')
-    .addHeader('Access-Control-Allow-Headers', 'Content-Type');
+function cors(data) {
+  const output = JSON.stringify(data);
+  return ContentService.createTextOutput(output)
+    .setMimeType(ContentService.MimeType.JSON);
 }
-function ok(data)  { return cors(ContentService.createTextOutput(JSON.stringify({ success: true,  ...data }))); }
-function fail(msg) { return cors(ContentService.createTextOutput(JSON.stringify({ success: false, message: msg }))); }
+function ok(data)  { return cors({ success: true,  ...data }); }
+function fail(msg) { return cors({ success: false, message: msg }); }
 
 // ── 라우터 ─────────────────────────────────────────────────
 function doGet(e) {
