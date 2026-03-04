@@ -72,7 +72,7 @@ export default function SocialEducation({ navigate, editMember, defaultStatus = 
     return Object.keys(e).length === 0;
   }
 
-  async function handleSubmit() {
+  async function handleSubmit(withPdf = false) {
     if (!validate()) return;
     if (!isEdit) {
       if (sig1Ref.current?.isEmpty()) { alert('개인정보 동의 서명을 해주세요'); return; }
@@ -104,12 +104,17 @@ export default function SocialEducation({ navigate, editMember, defaultStatus = 
     setLoading(false);
     if (res.success) {
       if (!isEdit) {
-        setPdfSigs({
-          sig1: sig1Ref.current?.toDataURL(),
-          sig2: sig2Ref.current?.toDataURL(),
-          sig3: sig3Ref.current?.toDataURL(),
-        });
-        setShowPdf(true);
+        if (withPdf) {
+          setPdfSigs({
+            sig1: sig1Ref.current?.toDataURL(),
+            sig2: sig2Ref.current?.toDataURL(),
+            sig3: sig3Ref.current?.toDataURL(),
+          });
+          setShowPdf(true);
+        } else {
+          alert('등록이 완료되었습니다.');
+          navigate('memberList', { sheetType: 'social' });
+        }
       } else {
         navigate('memberList', { sheetType: 'social' });
       }
@@ -223,18 +228,6 @@ export default function SocialEducation({ navigate, editMember, defaultStatus = 
           ))}
         </Section>
 
-        {/* 특이사항 */}
-        <div className="bg-amber-50 rounded-2xl border border-amber-100 p-5">
-          <h2 className="font-bold text-amber-700 text-base mb-3">📝 특이사항 (내부용)</h2>
-          <textarea
-            value={form.특이사항}
-            onChange={e => set('특이사항', e.target.value)}
-            placeholder="특이사항을 입력하세요 (신청서에 포함되지 않습니다)"
-            rows={3}
-            className="w-full bg-white border border-amber-200 rounded-xl px-3 py-2.5 text-sm outline-none resize-none focus:border-amber-400 placeholder-gray-300"
-          />
-        </div>
-
         {!isEdit && (
           <Section title="서명">
             {[
@@ -253,10 +246,35 @@ export default function SocialEducation({ navigate, editMember, defaultStatus = 
           </Section>
         )}
 
-        <button onClick={handleSubmit} disabled={loading}
-          className="w-full py-4 bg-blue-700 text-white font-bold text-lg rounded-2xl shadow-lg active:scale-95 transition-transform disabled:opacity-60">
-          {loading ? '처리 중...' : isEdit ? '수정 완료' : '등록 완료 → 신청서 출력'}
-        </button>
+        {/* 특이사항 */}
+        <div className="bg-amber-50 rounded-2xl border border-amber-100 p-5">
+          <h2 className="font-bold text-amber-700 text-base mb-3">📝 특이사항 (내부용)</h2>
+          <textarea
+            value={form.특이사항}
+            onChange={e => set('특이사항', e.target.value)}
+            placeholder="특이사항을 입력하세요 (신청서에 포함되지 않습니다)"
+            rows={3}
+            className="w-full bg-white border border-amber-200 rounded-xl px-3 py-2.5 text-sm outline-none resize-none focus:border-amber-400 placeholder-gray-300"
+          />
+        </div>
+
+        {isEdit ? (
+          <button onClick={() => handleSubmit(false)} disabled={loading}
+            className="w-full py-4 bg-blue-700 text-white font-bold text-lg rounded-2xl shadow-lg active:scale-95 transition-transform disabled:opacity-60">
+            {loading ? '처리 중...' : '수정 완료'}
+          </button>
+        ) : (
+          <div className="grid grid-cols-2 gap-3">
+            <button onClick={() => handleSubmit(false)} disabled={loading}
+              className="py-4 bg-gray-600 text-white font-bold text-base rounded-2xl shadow-lg active:scale-95 transition-transform disabled:opacity-60">
+              {loading ? '처리 중...' : '등록 완료'}
+            </button>
+            <button onClick={() => handleSubmit(true)} disabled={loading}
+              className="py-4 bg-blue-700 text-white font-bold text-base rounded-2xl shadow-lg active:scale-95 transition-transform disabled:opacity-60">
+              {loading ? '처리 중...' : '신청서 출력'}
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

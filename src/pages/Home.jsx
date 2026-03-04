@@ -15,38 +15,44 @@ export default function Home({ navigate }) {
         <p className="text-blue-200 text-sm tracking-wide mb-2">사업을 선택하세요</p>
 
         {/* 사회교육 */}
-        <button
-          onClick={() => navigate('memberList', { sheetType: 'social' })}
-          className="w-full max-w-sm bg-white rounded-2xl shadow-xl overflow-hidden group transition-transform active:scale-95"
-        >
-          <div className="h-2 bg-blue-500" />
-          <div className="p-7 flex items-center gap-5">
-            <div className="w-16 h-16 rounded-xl bg-blue-50 flex items-center justify-center text-3xl flex-shrink-0">🎭</div>
-            <div className="text-left">
-              <p className="text-xs text-blue-400 font-semibold tracking-wide uppercase mb-0.5">Social Education</p>
-              <h2 className="text-xl font-bold text-gray-800">사회교육 프로그램</h2>
-              <p className="text-sm text-gray-500 mt-0.5">발레 · 댄스 · 기타 · 미술</p>
+        <div className="w-full max-w-sm">
+          <button
+            onClick={() => navigate('memberList', { sheetType: 'social' })}
+            className="w-full bg-white rounded-2xl shadow-xl overflow-hidden group transition-transform active:scale-95"
+          >
+            <div className="h-2 bg-blue-500" />
+            <div className="p-7 flex items-center gap-5">
+              <div className="w-16 h-16 rounded-xl bg-blue-50 flex items-center justify-center text-3xl flex-shrink-0">🎭</div>
+              <div className="text-left">
+                <p className="text-xs text-blue-400 font-semibold tracking-wide uppercase mb-0.5">Social Education</p>
+                <h2 className="text-xl font-bold text-gray-800">사회교육 프로그램</h2>
+                <p className="text-sm text-gray-500 mt-0.5">발레 · 댄스 · 기타 · 미술</p>
+              </div>
+              <div className="ml-auto text-gray-300 text-2xl">›</div>
             </div>
-            <div className="ml-auto text-gray-300 text-2xl">›</div>
-          </div>
-        </button>
+          </button>
+          <p className="text-center text-blue-200 text-xs mt-2">등록회원 명단 확인 및 관리</p>
+        </div>
 
         {/* 노인대학 */}
-        <button
-          onClick={() => navigate('memberList', { sheetType: 'senior' })}
-          className="w-full max-w-sm bg-white rounded-2xl shadow-xl overflow-hidden group transition-transform active:scale-95"
-        >
-          <div className="h-2 bg-emerald-500" />
-          <div className="p-7 flex items-center gap-5">
-            <div className="w-16 h-16 rounded-xl bg-emerald-50 flex items-center justify-center text-3xl flex-shrink-0">🎓</div>
-            <div className="text-left">
-              <p className="text-xs text-emerald-400 font-semibold tracking-wide uppercase mb-0.5">Senior University</p>
-              <h2 className="text-xl font-bold text-gray-800">노인대학 청춘캠퍼스</h2>
-              <p className="text-sm text-gray-500 mt-0.5">한글 · 영어 · 디지털 · 체조</p>
+        <div className="w-full max-w-sm">
+          <button
+            onClick={() => navigate('memberList', { sheetType: 'senior' })}
+            className="w-full bg-white rounded-2xl shadow-xl overflow-hidden group transition-transform active:scale-95"
+          >
+            <div className="h-2 bg-emerald-500" />
+            <div className="p-7 flex items-center gap-5">
+              <div className="w-16 h-16 rounded-xl bg-emerald-50 flex items-center justify-center text-3xl flex-shrink-0">🎓</div>
+              <div className="text-left">
+                <p className="text-xs text-emerald-400 font-semibold tracking-wide uppercase mb-0.5">Senior University</p>
+                <h2 className="text-xl font-bold text-gray-800">노인대학 청춘캠퍼스</h2>
+                <p className="text-sm text-gray-500 mt-0.5">한글 · 영어 · 디지털 · 체조</p>
+              </div>
+              <div className="ml-auto text-gray-300 text-2xl">›</div>
             </div>
-            <div className="ml-auto text-gray-300 text-2xl">›</div>
-          </div>
-        </button>
+          </button>
+          <p className="text-center text-emerald-200 text-xs mt-2">등록회원 명단 확인 및 관리</p>
+        </div>
       </main>
 
       <footer className="text-center text-blue-300 text-xs pb-8">

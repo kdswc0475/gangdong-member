@@ -69,7 +69,7 @@ export default function SeniorUniversity({ navigate, editMember, defaultStatus =
     return Object.keys(e).length === 0;
   }
 
-  async function handleSubmit() {
+  async function handleSubmit(withPdf = false) {
     if (!validate()) return;
     if (!isEdit && sig1Ref.current?.isEmpty()) { alert('신청인 서명을 해주세요'); return; }
     setLoading(true);
@@ -95,8 +95,17 @@ export default function SeniorUniversity({ navigate, editMember, defaultStatus =
 
     setLoading(false);
     if (res.success) {
-      if (!isEdit) { setPdfSig(sig1Ref.current?.toDataURL()); setShowPdf(true); }
-      else navigate('memberList', { sheetType: 'senior' });
+      if (!isEdit) {
+        if (withPdf) {
+          setPdfSig(sig1Ref.current?.toDataURL());
+          setShowPdf(true);
+        } else {
+          alert('등록이 완료되었습니다.');
+          navigate('memberList', { sheetType: 'senior' });
+        }
+      } else {
+        navigate('memberList', { sheetType: 'senior' });
+      }
     } else {
       alert(res.message || '오류가 발생했습니다.');
     }
@@ -206,6 +215,16 @@ export default function SeniorUniversity({ navigate, editMember, defaultStatus =
           {errors.개인정보동의 && <p className="text-red-500 text-xs">{errors.개인정보동의}</p>}
         </Section>
 
+        {!isEdit && (
+          <Section title="서명">
+            <div className="flex justify-between items-center mb-1">
+              <p className="text-sm font-medium text-gray-700">신청인 서명</p>
+              <button onClick={() => sig1Ref.current?.clear()} className="text-xs text-gray-400 underline">지우기</button>
+            </div>
+            <SignatureCanvas ref={sig1Ref} height={90} />
+          </Section>
+        )}
+
         {/* 특이사항 */}
         <div className="bg-amber-50 rounded-2xl border border-amber-100 p-5">
           <h2 className="font-bold text-amber-700 text-base mb-3">📝 특이사항 (내부용)</h2>
@@ -218,20 +237,23 @@ export default function SeniorUniversity({ navigate, editMember, defaultStatus =
           />
         </div>
 
-        {!isEdit && (
-          <Section title="서명">
-            <div className="flex justify-between items-center mb-1">
-              <p className="text-sm font-medium text-gray-700">신청인 서명</p>
-              <button onClick={() => sig1Ref.current?.clear()} className="text-xs text-gray-400 underline">지우기</button>
-            </div>
-            <SignatureCanvas ref={sig1Ref} height={90} />
-          </Section>
+        {isEdit ? (
+          <button onClick={() => handleSubmit(false)} disabled={loading}
+            className="w-full py-4 bg-emerald-700 text-white font-bold text-lg rounded-2xl shadow-lg active:scale-95 transition-transform disabled:opacity-60">
+            {loading ? '처리 중...' : '수정 완료'}
+          </button>
+        ) : (
+          <div className="grid grid-cols-2 gap-3">
+            <button onClick={() => handleSubmit(false)} disabled={loading}
+              className="py-4 bg-gray-600 text-white font-bold text-base rounded-2xl shadow-lg active:scale-95 transition-transform disabled:opacity-60">
+              {loading ? '처리 중...' : '등록 완료'}
+            </button>
+            <button onClick={() => handleSubmit(true)} disabled={loading}
+              className="py-4 bg-emerald-700 text-white font-bold text-base rounded-2xl shadow-lg active:scale-95 transition-transform disabled:opacity-60">
+              {loading ? '처리 중...' : '신청서 출력'}
+            </button>
+          </div>
         )}
-
-        <button onClick={handleSubmit} disabled={loading}
-          className="w-full py-4 bg-emerald-700 text-white font-bold text-lg rounded-2xl shadow-lg active:scale-95 transition-transform disabled:opacity-60">
-          {loading ? '처리 중...' : isEdit ? '수정 완료' : '등록 완료 → 신청서 출력'}
-        </button>
       </div>
     </div>
   );

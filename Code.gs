@@ -3,10 +3,10 @@
 // ============================================================
 
 const SPREADSHEET_ID = '1dzTz6L7W95zhTubrEXSxz-hlEwooYrqAu5-0jn-5A9Y';
-const SHEET_SOCIAL            = '사회교육';
-const SHEET_SENIOR            = '노인대학';
-const SHEET_PROGRAMS_SOCIAL   = '사회교육_프로그램';
-const SHEET_PROGRAMS_SENIOR   = '노인대학_프로그램';
+const SHEET_SOCIAL            = '사회교육 프로그램';
+const SHEET_SENIOR            = '노인대학 청춘캠퍼스';
+const SHEET_PROGRAMS_SOCIAL   = '사회교육_프로그램목록';
+const SHEET_PROGRAMS_SENIOR   = '노인대학_프로그램목록';
 
 // ── 헤더 정의 ──────────────────────────────────────────────
 const SOCIAL_HEADERS = [
