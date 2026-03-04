@@ -12,11 +12,20 @@ async function gasGet(params) {
   console.log('🌐 [API GET] Request:', params.action, fullUrl);
 
   try {
-    const response = await fetch(fullUrl, { mode: 'cors' });
+    const response = await fetch(fullUrl);
     if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
-    const data = await response.json();
-    console.log('✅ [API GET] Success:', params.action, data);
-    return data;
+
+    const text = await response.text();
+    try {
+      const data = JSON.parse(text);
+      console.log('✅ [API GET] Success:', params.action, data);
+      return data;
+    } catch (e) {
+      if (text.includes('<html')) {
+        throw new Error('GAS 배포 설정 오류: "모든 사용자(Anyone)"에게 액세스 권한을 허용해야 합니다.');
+      }
+      throw new Error(`JSON 파싱 오류: ${e.message}`);
+    }
   } catch (error) {
     console.error('❌ [API GET] Failure:', params.action, error);
     return { success: false, message: `통신 오류: ${error.message}` };
@@ -29,14 +38,12 @@ async function gasPost(body) {
   try {
     const response = await fetch(GAS_URL, {
       method: 'POST',
-      mode: 'cors',
       headers: { 'Content-Type': 'text/plain' },
       body: JSON.stringify(body),
     });
 
     if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
 
-    // GAS가 리다이렉트를 줄 수 있으므로 응답 텍스트를 먼저 확인
     const text = await response.text();
     console.log('📄 [API POST] Raw Response:', text);
 
@@ -45,8 +52,10 @@ async function gasPost(body) {
       console.log('✅ [API POST] Success:', body.action, data);
       return data;
     } catch (e) {
-      console.error('❌ [API POST] JSON Parse Error:', e, text);
-      return { success: false, message: '서버 응답 형식이 올바르지 않습니다.' };
+      if (text.includes('<html')) {
+        throw new Error('GAS 배포 설정 오류: "모든 사용자(Anyone)"에게 액세스 권한을 허용해야 합니다.');
+      }
+      throw new Error('서버 응답 형식이 올바르지 않습니다.');
     }
   } catch (error) {
     console.error('❌ [API POST] Failure:', body.action, error);
