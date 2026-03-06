@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { saveNote, approveWaitlist } from '../utils/api';
 import SocialPdfTemplate from './SocialPdfTemplate';
 import SeniorPdfTemplate from './SeniorPdfTemplate';
@@ -141,36 +142,33 @@ export default function MemberDetailModal({ member, sheetType, onClose, onUpdate
           </div>
         </div>
       </div>
-    </div>
 
-      {
-    showPdf && (
-      <div className="fixed inset-0 z-[60] bg-gray-100 overflow-auto">
-        <div className="sticky top-0 z-10 bg-white border-b px-4 py-3 flex gap-3">
-          <button onClick={() => setShowPdf(false)}
-            className="flex-1 py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold">닫기</button>
-          <button onClick={() => printPDF(isSocial ? 'social-pdf' : 'senior-pdf')}
-            className="flex-1 py-3 bg-blue-600 text-white rounded-xl font-semibold">🖨️ 인쇄</button>
-          <button onClick={() => savePDF(isSocial ? 'social-pdf' : 'senior-pdf', `${isSocial ? '사회교육' : '노인대학'}_${member['성명']}_신청서.pdf`)}
-            className="flex-1 py-3 bg-blue-800 text-white rounded-xl font-semibold">💾 저장</button>
+      {showPdf && (
+        <div className="fixed inset-0 z-[60] bg-gray-100 overflow-auto">
+          <div className="sticky top-0 z-10 bg-white border-b px-4 py-3 flex gap-3">
+            <button onClick={() => setShowPdf(false)}
+              className="flex-1 py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold">닫기</button>
+            <button onClick={() => printPDF(isSocial ? 'social-pdf' : 'senior-pdf')}
+              className="flex-1 py-3 bg-blue-600 text-white rounded-xl font-semibold">🖨️ 인쇄</button>
+            <button onClick={() => savePDF(isSocial ? 'social-pdf' : 'senior-pdf', `${isSocial ? '사회교육' : '노인대학'}_${member['성명']}_신청서.pdf`)}
+              className="flex-1 py-3 bg-blue-800 text-white rounded-xl font-semibold">💾 저장</button>
+          </div>
+          <div className="flex justify-center p-4">
+            {isSocial ? (
+              <SocialPdfTemplate
+                data={{ ...member, 신청프로그램: (member['신청프로그램'] || '').split(',').map(s => s.trim()).filter(Boolean) }}
+                sig1={null} sig2={null} sig3={null}
+              />
+            ) : (
+              <SeniorPdfTemplate
+                data={{ ...member, 희망수업: (member['희망수업'] || '').split(',').map(s => s.trim()).filter(Boolean) }}
+                sig1={null}
+              />
+            )}
+          </div>
         </div>
-        <div className="flex justify-center p-4">
-          {isSocial ? (
-            <SocialPdfTemplate
-              data={{ ...member, 신청프로그램: (member['신청프로그램'] || '').split(',').map(s => s.trim()).filter(Boolean) }}
-              sig1={null} sig2={null} sig3={null}
-            />
-          ) : (
-            <SeniorPdfTemplate
-              data={{ ...member, 희망수업: (member['희망수업'] || '').split(',').map(s => s.trim()).filter(Boolean) }}
-              sig1={null}
-            />
-          )}
-        </div>
-      </div>
-    )
-  }
-    </div >
+      )}
+    </div>
   );
 }
 
