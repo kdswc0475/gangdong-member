@@ -112,7 +112,7 @@ export default function MemberDetailModal({ member, sheetType, onClose, onUpdate
         <div className="px-6 pb-6 space-y-3">
           <button
             onClick={() => setShowPdf(true)}
-            className="w-full py-3 rounded-xl border-2 border-gray-200 text-gray-700 font-bold text-sm active:scale-95 transition-transform flex items-center justify-center gap-2"
+            className="w-full py-3.5 rounded-xl bg-blue-600 text-white font-bold text-sm active:scale-95 transition-all flex items-center justify-center gap-2 shadow-sm mb-1"
           >
             🖨️ 신청서 출력 (인쇄/저장)
           </button>
