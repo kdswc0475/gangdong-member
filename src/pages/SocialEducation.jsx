@@ -121,8 +121,16 @@ export default function SocialEducation({ navigate, editMember, defaultStatus = 
             });
             setShowPdf(true);
           } else {
-            alert('등록이 완료되었습니다.');
-            navigate('memberList', { sheetType: 'social' });
+            if (window.confirm('등록이 완료되었습니다. 신청서를 출력하시겠습니까?')) {
+              setPdfSigs({
+                sig1: sig1Ref.current?.toDataURL(),
+                sig2: sig2Ref.current?.toDataURL(),
+                sig3: sig3Ref.current?.toDataURL(),
+              });
+              setShowPdf(true);
+            } else {
+              navigate('memberList', { sheetType: 'social' });
+            }
           }
         } else {
           alert('수정되었습니다.');

@@ -109,8 +109,12 @@ export default function SeniorUniversity({ navigate, editMember, defaultStatus =
             setPdfSig(sig1Ref.current?.toDataURL());
             setShowPdf(true);
           } else {
-            alert('등록이 완료되었습니다.');
-            navigate('memberList', { sheetType: 'senior' });
+            if (window.confirm('등록이 완료되었습니다. 신청서를 출력하시겠습니까?')) {
+              setPdfSig(sig1Ref.current?.toDataURL());
+              setShowPdf(true);
+            } else {
+              navigate('memberList', { sheetType: 'senior' });
+            }
           }
         } else {
           alert('수정되었습니다.');

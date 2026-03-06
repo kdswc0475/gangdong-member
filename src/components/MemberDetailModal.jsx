@@ -1,10 +1,13 @@
-import { useState } from 'react';
 import { saveNote, approveWaitlist } from '../utils/api';
+import SocialPdfTemplate from './SocialPdfTemplate';
+import SeniorPdfTemplate from './SeniorPdfTemplate';
+import { printPDF, savePDF } from '../utils/pdf';
 
 export default function MemberDetailModal({ member, sheetType, onClose, onUpdate }) {
   const [note, setNote] = useState(member['기타사항'] || member['특이사항'] || '');
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [showPdf, setShowPdf] = useState(false);
 
   const isSocial = sheetType === 'social';
   const programKey = isSocial ? '신청프로그램' : '희망수업';
@@ -106,7 +109,14 @@ export default function MemberDetailModal({ member, sheetType, onClose, onUpdate
           </div>
         )}
 
-        <div className="px-6 pb-6">
+        <div className="px-6 pb-6 space-y-3">
+          <button
+            onClick={() => setShowPdf(true)}
+            className="w-full py-3 rounded-xl border-2 border-gray-200 text-gray-700 font-bold text-sm active:scale-95 transition-transform flex items-center justify-center gap-2"
+          >
+            🖨️ 신청서 출력 (인쇄/저장)
+          </button>
+
           <div className="bg-amber-50 rounded-2xl p-4 border border-amber-100">
             <p className="text-xs font-semibold text-amber-700 uppercase tracking-wide mb-2">
               📝 기타사항
@@ -132,6 +142,35 @@ export default function MemberDetailModal({ member, sheetType, onClose, onUpdate
         </div>
       </div>
     </div>
+
+      {
+    showPdf && (
+      <div className="fixed inset-0 z-[60] bg-gray-100 overflow-auto">
+        <div className="sticky top-0 z-10 bg-white border-b px-4 py-3 flex gap-3">
+          <button onClick={() => setShowPdf(false)}
+            className="flex-1 py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold">닫기</button>
+          <button onClick={() => printPDF(isSocial ? 'social-pdf' : 'senior-pdf')}
+            className="flex-1 py-3 bg-blue-600 text-white rounded-xl font-semibold">🖨️ 인쇄</button>
+          <button onClick={() => savePDF(isSocial ? 'social-pdf' : 'senior-pdf', `${isSocial ? '사회교육' : '노인대학'}_${member['성명']}_신청서.pdf`)}
+            className="flex-1 py-3 bg-blue-800 text-white rounded-xl font-semibold">💾 저장</button>
+        </div>
+        <div className="flex justify-center p-4">
+          {isSocial ? (
+            <SocialPdfTemplate
+              data={{ ...member, 신청프로그램: (member['신청프로그램'] || '').split(',').map(s => s.trim()).filter(Boolean) }}
+              sig1={null} sig2={null} sig3={null}
+            />
+          ) : (
+            <SeniorPdfTemplate
+              data={{ ...member, 희망수업: (member['희망수업'] || '').split(',').map(s => s.trim()).filter(Boolean) }}
+              sig1={null}
+            />
+          )}
+        </div>
+      </div>
+    )
+  }
+    </div >
   );
 }
 
