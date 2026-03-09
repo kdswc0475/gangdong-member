@@ -105,11 +105,23 @@ export default function SeniorUniversity({ navigate, editMember, defaultStatus =
 
       if (res.success) {
         if (!isEdit) {
+          // 출석관리 시스템 동기화 결과 체크
+          let msg = '등록되었습니다.';
+          if (res.sync) {
+            if (res.sync.success) {
+              msg += '\n✅ 출석관리 시스템에도 성공적으로 등록되었습니다.';
+            } else {
+              msg += '\n⚠️ 출석관리 시스템 등록 실패!\n사유: ' + (res.sync.content || res.sync.error || '알 수 없는 오류');
+              console.error('❌ [SYNC FAILED]', res.sync);
+            }
+          }
+          alert(msg);
+
           if (withPdf) {
             setPdfSig(sig1Ref.current?.toDataURL());
             setShowPdf(true);
           } else {
-            if (window.confirm('등록이 완료되었습니다. 신청서를 출력하시겠습니까?')) {
+            if (window.confirm('신청서를 출력하시겠습니까?')) {
               setPdfSig(sig1Ref.current?.toDataURL());
               setShowPdf(true);
             } else {

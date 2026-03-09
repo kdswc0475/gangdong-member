@@ -8,6 +8,11 @@ const SHEET_SENIOR            = '노인대학 청춘캠퍼스';
 const SHEET_PROGRAMS_SOCIAL   = '사회교육_프로그램목록';
 const SHEET_PROGRAMS_SENIOR   = '노인대학_프로그램목록';
 
+// ── 청춘캠퍼스 출석관리 시스템(AMS) 연동 설정 ──────────────────
+// ※ 중요: AMS를 웹 앱으로 배포한 후 생성된 URL로 교체해 주세요.
+const AMS_URL = 'https://script.google.com/macros/s/AKfycbzwPr4wLXNHyTWNYhWHYyYJp6x-QKXeawgnYDMYXYa5QFvEHTHPyXCmg9ckmwmIHZtsig/exec';
+
+
 // ── 헤더 정의 ──────────────────────────────────────────────
 const SOCIAL_HEADERS = [
   '행번호','등록일','상태','성명','성별','생년월일',
@@ -132,8 +137,62 @@ function addMember(sheetType, data) {
     return data[h] !== undefined ? data[h] : '';
   });
   sh.appendRow(row);
-  return rowIndex;
+  
+  // 청춘캠퍼스(senior)일 경우 출석관리 시스템으로 자동 전송
+  let syncResult = null;
+  if (sheetType === 'senior') {
+    syncResult = syncToAMS(data);
+  }
+  
+  return { rowIndex: rowIndex, sync: syncResult };
 }
+
+/**
+ * 청춘캠퍼스 전송 헬퍼 (생년월일 필드 추가됨)
+ */
+function syncToAMS(data) {
+  try {
+    const payload = {
+      action: 'registerSenior',
+      params: {
+        name:              data['성명'],
+        gender:            data['성별'],
+        birthdate:         data['생년월일'],
+        contact:           data['연락처'],
+        address:           data['주소(동)'],
+        subjects:          data['희망수업'] ? data['희망수업'].split(',').map(s => s.trim()) : [],
+        emergencyContact:  data['비상연락처'],
+        emergencyRelation: data['관계']
+      }
+    };
+
+    const options = {
+      method: 'post',
+      contentType: 'application/json',
+      payload: JSON.stringify(payload),
+      muteHttpExceptions: true
+    };
+
+    const response = UrlFetchApp.fetch(AMS_URL, options);
+    const code = response.getResponseCode();
+    const content = response.getContentText();
+    
+    Logger.log('AMS Sync Response [%s]: %s', code, content);
+    
+    return {
+      success: code >= 200 && code < 300,
+      code: code,
+      content: content
+    };
+  } catch (e) {
+    Logger.log('AMS Sync Error: ' + e.toString());
+    return {
+      success: false,
+      error: e.toString()
+    };
+  }
+}
+
 
 function updateMember(sheetType, rowIndex, data) {
   const sh = getDataSheet(sheetType);
